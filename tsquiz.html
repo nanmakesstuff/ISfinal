@@ -1,0 +1,211 @@
+<<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taylor Swift Lyric Quiz</title>
+    <style>
+        /* CSS - Styles for the Game */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+
+        #game-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+
+        h1 {
+            font-size: 2em;
+            margin-bottom: 20px;
+            color: #ff00cc;
+        }
+
+        #question-container {
+            margin-bottom: 20px;
+        }
+
+        button {
+            background-color: #ff66cc;
+            border: none;
+            color: white;
+            padding: 10px;
+            margin: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #e60099;
+        }
+
+        #score-container {
+            font-size: 1.2em;
+        }
+
+        #timer {
+            font-size: 1.5em;
+            margin: 20px 0;
+        }
+
+        #next-btn {
+            background-color: #28a745;
+            padding: 10px 20px;
+            border: none;
+            color: white;
+            font-size: 1.2em;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #next-btn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Game Content -->
+    <div id="game-container">
+        <h1>Taylor Swift Lyric Quiz</h1>
+        
+        <div id="question-container">
+            <p id="lyric"></p>
+        </div>
+
+        <div id="answer-options">
+            <button class="answer-btn" onclick="checkAnswer(0)">Option 1</button>
+            <button class="answer-btn" onclick="checkAnswer(1)">Option 2</button>
+            <button class="answer-btn" onclick="checkAnswer(2)">Option 3</button>
+            <button class="answer-btn" onclick="checkAnswer(3)">Option 4</button>
+        </div>
+
+        <div id="score-container">
+            <p>Score: <span id="score">0</span></p>
+        </div>
+
+        <div id="timer">
+            <p>Time Left: <span id="time">30</span></p>
+        </div>
+        
+        <button id="next-btn" onclick="nextQuestion()" style="display:none;">Next Question</button>
+    </div>
+
+    <script>
+        // Game Variables
+        const questions = [
+            {
+                lyric: "I remember how we felt sitting by the water",
+                options: ["Mine", "All Too Well", "Red", "Wildest Dreams"],
+                correct: 0, // Index of correct answer ("Mine")
+            },
+            {
+                lyric: "Can't you see that I'm the one who understands you",
+                options: ["You Belong With Me", "Teardrops on My Guitar", "Love Story", "Our Song"],
+                correct: 0, // Index of correct answer ("You Belong With Me")
+            },
+            {
+                lyric: "I once believed love would be burning red",
+                options: ["Red", "Daylight", "Begin Again", "I Knew You Were Trouble"],
+                correct: 1, // Index of correct answer ("Daylight")
+            },
+            {
+                lyric: "We were both young when I first saw you",
+                options: ["Love Story", "Tim McGraw", "Teardrops on My Guitar", "Back to December"],
+                correct: 0, // Index of correct answer ("Love Story")
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let timer = 30;
+        let timerInterval;
+
+        // Start the game
+        function startGame() {
+            loadQuestion();
+            startTimer();
+        }
+
+        // Load a new question
+        function loadQuestion() {
+            const question = questions[currentQuestionIndex];
+            document.getElementById("lyric").textContent = question.lyric;
+            const buttons = document.querySelectorAll('.answer-btn');
+            
+            question.options.forEach((option, index) => {
+                buttons[index].textContent = option;
+            });
+
+            document.getElementById("time").textContent = timer;
+        }
+
+        // Check the answer
+        function checkAnswer(index) {
+            const correctAnswerIndex = questions[currentQuestionIndex].correct;
+            if (index === correctAnswerIndex) {
+                score++;
+                document.getElementById("score").textContent = score;
+            }
+            // Disable buttons after answer is clicked
+            document.querySelectorAll('.answer-btn').forEach(button => {
+                button.disabled = true;
+            });
+            document.getElementById("next-btn").style.display = 'block'; // Show next button
+        }
+
+        // Show the next question
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+                document.querySelectorAll('.answer-btn').forEach(button => {
+                    button.disabled = false; // Enable buttons for the next question
+                });
+                document.getElementById("next-btn").style.display = 'none'; // Hide next button
+            } else {
+                endGame();
+            }
+        }
+
+        // Timer functionality
+        function startTimer() {
+            timerInterval = setInterval(function() {
+                if (timer <= 0) {
+                    clearInterval(timerInterval);
+                    nextQuestion();
+                } else {
+                    timer--;
+                    document.getElementById("time").textContent = timer;
+                }
+            }, 1000);
+        }
+
+        // End the game
+        function endGame() {
+            alert(`Game Over! Your final score is: ${score}`);
+            // Optionally, reset the game
+            currentQuestionIndex = 0;
+            score = 0;
+            timer = 30;
+            startGame(); // Restart the game
+        }
+
+        // Initialize the game
+        startGame();
+    </script>
+
+</body>
+</html>
